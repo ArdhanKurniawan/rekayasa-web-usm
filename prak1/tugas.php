@@ -19,7 +19,15 @@
     echo "<br>";
     echo $decode_object->a;
     echo "<br>";
+    echo $decode_object->b;
+    echo "<br>";
+    echo $decode_object->c;
+    echo "<br>";
 
     var_dump($decode_array);
     echo "<br>";
     echo $decode_array['a'];
+    echo "<br>";
+    echo $decode_array['b'];
+    echo "<br>";
+    echo $decode_array['c'];
