@@ -1,0 +1,431 @@
+openapi: 3.0.2
+info:
+  title: API Perpustakaan [Nama]
+  description: |
+    API ini digunakan untuk mengelola data buku, anggota, dan peminjaman di sistem Perpustakaan Digital.
+    Fitur mencakup menampilkan daftar buku, menambah, mengubah, dan menghapus data buku serta anggota,
+    serta mencatat aktivitas peminjaman dan pengembalian buku.
+  version: 1.1.0
+  contact:
+    name: Admin
+    email: admin@perpustakaan.com
+
+servers:
+  - url: https://api-perpustakaan.example.com/v1
+    description: API perpustakaan [nama]
+
+tags:
+  - name: buku
+    description: Operasi terkait data buku
+  - name: anggota
+    description: Operasi terkait data anggota
+  - name: peminjaman
+    description: Operasi terkait data peminjaman buku
+
+paths:
+  /buku:
+    get:
+      tags: [buku]
+      summary: Menampilkan daftar semua buku
+      operationId: getAllBooks
+      responses:
+        '200':
+          description: Daftar buku berhasil diambil
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Buku'
+    post:
+      tags: [buku]
+      summary: Menambahkan buku baru
+      operationId: addBook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InsertBuku'
+      responses:
+        '201':
+          description: Buku berhasil ditambahkan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Buku'
+
+  /buku/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID buku
+        schema:
+          type: integer
+    # patch:
+    #   tags: [buku]
+    #   summary: Partial update buku
+    #   requestBody:
+    #     required: true
+    #     content:
+    #       application/json:
+    #         schema:
+    #           $ref: '#/components/schemas/UpdateBuku'
+    #   responses:
+    #     '200':
+    #       description: Buku berhasil diperbarui (partial)
+    #     '404':
+    #       description: Buku tidak ditemukan
+    get:
+      tags: [buku]
+      summary: Mendapatkan detail buku berdasarkan ID
+      operationId: getBookById
+      responses:
+        '200':
+          description: Data buku ditemukan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Buku'
+        '404':
+          description: Buku tidak ditemukan
+    put:
+      tags: [buku]
+      summary: Memperbarui data buku berdasarkan ID
+      operationId: updateBook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateBuku'
+      responses:
+        '200':
+          description: Buku berhasil diperbarui
+        '404':
+          description: Buku tidak ditemukan
+    delete:
+      tags: [buku]
+      summary: Menghapus buku berdasarkan ID
+      operationId: deleteBook
+      responses:
+        '200':
+          description: Buku berhasil dihapus
+        '404':
+          description: Buku tidak ditemukan
+
+  /anggota:
+    get:
+      tags: [anggota]
+      summary: Menampilkan daftar semua anggota
+      operationId: getAllMembers
+      responses:
+        '200':
+          description: Daftar anggota berhasil diambil
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Anggota'
+    post:
+      tags: [anggota]
+      summary: Menambahkan anggota baru
+      operationId: addMember
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InsertAnggota'
+      responses:
+        '201':
+          description: Anggota berhasil ditambahkan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Anggota'
+
+  /anggota/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID anggota
+        schema:
+          type: integer
+    get:
+      tags: [anggota]
+      summary: Mendapatkan detail anggota berdasarkan ID
+      operationId: getMemberById
+      responses:
+        '200':
+          description: Data anggota ditemukan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Anggota'
+        '404':
+          description: Anggota tidak ditemukan
+    put:
+      tags: [anggota]
+      summary: Memperbarui data anggota
+      operationId: updateMember
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAnggota'
+      responses:
+        '200':
+          description: Anggota berhasil diperbarui
+        '404':
+          description: Anggota tidak ditemukan
+    delete:
+      tags: [anggota]
+      summary: Menghapus anggota
+      operationId: deleteMember
+      responses:
+        '200':
+          description: Anggota berhasil dihapus
+        '404':
+          description: Anggota tidak ditemukan
+
+  /peminjaman:
+    get:
+      tags: [peminjaman]
+      summary: Menampilkan semua data peminjaman
+      operationId: getAllLoans
+      responses:
+        '200':
+          description: Daftar peminjaman berhasil diambil
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Peminjaman'
+    post:
+      tags: [peminjaman]
+      summary: Mencatat peminjaman buku baru
+      operationId: addLoan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InsertPeminjaman'
+      responses:
+        '201':
+          description: Peminjaman berhasil dicatat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Peminjaman'
+
+  /peminjaman/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: ID peminjaman
+        schema:
+          type: integer
+    get:
+      tags: [peminjaman]
+      summary: Menampilkan detail peminjaman
+      operationId: getLoanById
+      responses:
+        '200':
+          description: Data peminjaman ditemukan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Peminjaman'
+        '404':
+          description: Data tidak ditemukan
+    put:
+      tags: [peminjaman]
+      summary: Memperbarui status peminjaman
+      operationId: updateLoan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePeminjaman'
+      responses:
+        '200':
+          description: Data peminjaman berhasil diperbarui
+        '404':
+          description: Data tidak ditemukan
+    delete:
+      tags: [peminjaman]
+      summary: Menghapus catatan peminjaman
+      operationId: deleteLoan
+      responses:
+        '200':
+          description: Peminjaman dihapus
+        '404':
+          description: Data tidak ditemukan
+
+components:
+  schemas:
+    Buku:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        judul:
+          type: string
+          example: Belajar Python untuk Pemula
+        penulis:
+          type: string
+          example: Budi Santoso
+        tahun_terbit:
+          type: integer
+          example: 2023
+        kategori:
+          type: string
+          example: Pemrograman
+        stok:
+          type: integer
+          example: 5
+
+    InsertBuku:
+      type: object
+      properties:
+        judul:
+          type: string
+          example: Algoritma Dasar
+        penulis:
+          type: string
+          example: Dwi Andini
+        tahun_terbit:
+          type: integer
+          example: 2021
+        kategori:
+          type: string
+          example: Ilmu Komputer
+        stok:
+          type: integer
+          example: 8
+
+    UpdateBuku:
+      type: object
+      description: Schema untuk memperbarui data buku (semua field opsional)
+      properties:
+        judul:
+          type: string
+          example: Algoritma Lanjut
+        penulis:
+          type: string
+          example: Dwi Andini
+        tahun_terbit:
+          type: integer
+          example: 2022
+        kategori:
+          type: string
+          example: Ilmu Komputer
+        stok:
+          type: integer
+          example: 10
+
+    Anggota:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 10
+        nama:
+          type: string
+          example: Ahmad Fauzi
+        email:
+          type: string
+          example: ahmad@email.com
+        no_telepon:
+          type: string
+          example: "081234567890"
+        tanggal_daftar:
+          type: string
+          format: date
+          example: 2024-02-01
+
+    InsertAnggota:
+      type: object
+      properties:
+        nama:
+          type: string
+          example: Siti Rahma
+        email:
+          type: string
+          example: siti@email.com
+        no_telepon:
+          type: string
+          example: "081298765432"
+
+    UpdateAnggota:
+      type: object
+      description: Schema untuk memperbarui data anggota (semua field opsional)
+      properties:
+        nama:
+          type: string
+          example: Siti Rahma
+        email:
+          type: string
+          example: siti@email.com
+        no_telepon:
+          type: string
+          example: "081298765432"
+
+    Peminjaman:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 501
+        id_anggota:
+          type: integer
+          example: 10
+        id_buku:
+          type: integer
+          example: 1
+        tanggal_pinjam:
+          type: string
+          format: date
+          example: 2024-10-01
+        tanggal_kembali:
+          type: string
+          format: date
+          example: 2024-10-10
+        status:
+          type: string
+          example: Dikembalikan
+
+    InsertPeminjaman:
+      type: object
+      properties:
+        id_anggota:
+          type: integer
+          example: 10
+        id_buku:
+          type: integer
+          example: 1
+        tanggal_pinjam:
+          type: string
+          format: date
+          example: 2024-10-01
+        tanggal_kembali:
+          type: string
+          format: date
+          example: 2024-10-10
+
+    UpdatePeminjaman:
+      type: object
+      properties:
+        status:
+          type: string
+          example: Dikembalikan
